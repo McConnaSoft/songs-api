@@ -1,0 +1,102 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-artist
+      author: tim
+      changes:
+        - createTable:
+            tableName: artist
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+
+        - addUniqueConstraint:
+            tableName: artist
+            columnNames: name
+            constraintName: uq_artist_name
+
+  - changeSet:
+      id: 002-create-song
+      author: tim
+      changes:
+        - createTable:
+            tableName: song
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: artist_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: musical_key
+                  type: varchar(50)
+
+              - column:
+                  name: bpm
+                  type: integer
+
+              - column:
+                  name: notes
+                  type: text
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+
+        - addForeignKeyConstraint:
+            baseTableName: song
+            baseColumnNames: artist_id
+            referencedTableName: artist
+            referencedColumnNames: id
+            constraintName: fk_song_artist
+            onDelete: RESTRICT
+
+        - createIndex:
+            tableName: song
+            indexName: ix_song_artist_id
+            columns:
+              - column:
+                  name: artist_id
+
+        - addUniqueConstraint:
+            tableName: song
+            columnNames: artist_id,title
+            constraintName: uq_song_artist_title

@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: songs-api
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/songs
+    username: songs
+    password: ${SONGS_DB_PASSWORD:changeme}
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+server:
+  port: 8080
