@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: songs-api
+  namespace: songs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: songs-api
+  template:
+    metadata:
+      labels:
+        app: songs-api
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+
+      containers:
+        - name: songs-api
+          # Placeholder. Script will override with the real tag every deploy.
+          image: ghcr.io/mcconnasoft/songs-api:REPLACED_BY_SCRIPT
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/songs
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
