@@ -6,6 +6,7 @@ import com.mcconasoft.songs_api.domain.model.Song;
 import com.mcconasoft.songs_api.domain.port.in.SongUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class SongController {
 
     @Operation(summary = "Create a song")
     @PostMapping
-    public ResponseEntity<SongResponse> create(@RequestBody CreateSongRequest req) {
+    public ResponseEntity<SongResponse> create(@Valid @RequestBody CreateSongRequest req) {
         Song created = songs.create(new Song(null, req.artistId(), req.title(), req.musicalKey(), req.bpm(), req.notes()));
         return ResponseEntity.created(URI.create("/songs/" + created.id()))
                 .body(new SongResponse(created.id(), created.artistId(), created.title(), created.musicalKey(), created.bpm(), created.notes()));
@@ -50,7 +51,7 @@ public class SongController {
 
     @Operation(summary = "Update a song")
     @PutMapping("/{id}")
-    public ResponseEntity<SongResponse> update(@PathVariable UUID id, @RequestBody CreateSongRequest req) {
+    public ResponseEntity<SongResponse> update(@PathVariable UUID id, @Valid @RequestBody CreateSongRequest req) {
         Song updated = songs.update(id, new Song(null, req.artistId(), req.title(), req.musicalKey(), req.bpm(), req.notes()));
         return ResponseEntity.ok(new SongResponse(updated.id(), updated.artistId(), updated.title(), updated.musicalKey(), updated.bpm(), updated.notes()));
     }

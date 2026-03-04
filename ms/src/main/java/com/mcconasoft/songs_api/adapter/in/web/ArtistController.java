@@ -6,6 +6,7 @@ import com.mcconasoft.songs_api.domain.model.Artist;
 import com.mcconasoft.songs_api.domain.port.in.ArtistUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class ArtistController {
 
     @Operation(summary = "Create an artist")
     @PostMapping
-    public ResponseEntity<ArtistResponse> create(@RequestBody CreateArtistRequest req) {
+    public ResponseEntity<ArtistResponse> create(@Valid @RequestBody CreateArtistRequest req) {
         Artist created = artists.create(new Artist(null, req.name()));
         return ResponseEntity.created(URI.create("/artists/" + created.id()))
                 .body(new ArtistResponse(created.id(), created.name()));
@@ -50,7 +51,7 @@ public class ArtistController {
 
     @Operation(summary = "Rename an artist")
     @PutMapping("/{id}")
-    public ResponseEntity<ArtistResponse> rename(@PathVariable UUID id, @RequestBody CreateArtistRequest req) {
+    public ResponseEntity<ArtistResponse> rename(@PathVariable UUID id, @Valid @RequestBody CreateArtistRequest req) {
         Artist updated = artists.rename(id, req.name());
         return ResponseEntity.ok(new ArtistResponse(updated.id(), updated.name()));
     }
